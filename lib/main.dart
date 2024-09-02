@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -71,7 +72,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final int _counter = 0;
+// Get battery level.
+String _batteryLevel = 'Unknown battery level.';
+  static const platform = MethodChannel('samples.flutter.dev/battery');
 
+Future<void> _getBatteryLevel() async {
+  String batteryLevel;
+  try {
+    final result = await platform.invokeMethod<int>('getBatteryLevel');
+    batteryLevel = 'Battery level at $result % .';
+  } on PlatformException catch (e) {
+    batteryLevel = "Failed to get battery level: '${e.message}'.";
+  }
+
+  setState(() {
+    _batteryLevel = batteryLevel;
+  });
+}
   @override
   void initState() {
     super.initState();
@@ -128,8 +145,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+             Text(
+              '$_batteryLevel',
             ),
             Text(
               '$_counter',
@@ -138,6 +155,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: (){_getBatteryLevel();}, child: Icon(Icons.info),),
     );
   }
 
