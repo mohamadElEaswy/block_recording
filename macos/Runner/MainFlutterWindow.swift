@@ -1,6 +1,7 @@
 import Cocoa
 import FlutterMacOS
 import IOKit.ps
+import AVFoundation
 
 class MainFlutterWindow: NSWindow {
   override func awakeFromNib() {
