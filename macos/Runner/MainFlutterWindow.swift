@@ -1,7 +1,6 @@
 import Cocoa
 import FlutterMacOS
 import IOKit.ps
-import AVFoundation
 
 class MainFlutterWindow: NSWindow {
   override func awakeFromNib() {
@@ -10,30 +9,33 @@ class MainFlutterWindow: NSWindow {
     self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
 
-    let getBatteryLevel = FlutterMethodChannel(
-      name: "samples.flutter.dev/battery",
-      binaryMessenger: flutterViewController.engine.binaryMessenger)
-    getBatteryLevel.setMethodCallHandler { (call, result) in
-      switch call.method {
-      case "getBattery":
-        guard let level = getBattery() else {
-          result(
-            FlutterError(
-              code: "UNAVAILABLE",
-              message: "Battery level not available",
-              details: nil))
-        return
-        }
-        result(level)
-      default:
-    result(FlutterMethodNotImplemented)
-  }
-    }
+    NSWindowSharingNone
     RegisterGeneratedPlugins(registry: flutterViewController)
 
     super.awakeFromNib()
   }
 }
+/*
+    let getBatteryLevel = FlutterMethodChannel(
+      name: "samples.flutter.dev/battery",
+      binaryMessenger: flutterViewController.engine.binaryMessenger)
+      getBatteryLevel.setMethodCallHandler { (call, result) in
+        switch call.method {
+        case "getBattery":
+          guard let level = getBattery() else {
+            result(
+              FlutterError(
+                code: "UNAVAILABLE",
+                message: "Battery level not available",
+                details: nil))
+          return
+          }
+          result(level)
+        default:
+      result(FlutterMethodNotImplemented)
+      }
+    }
+
 
 private func getBattery() -> Int? {
   let info = IOPSCopyPowerSourcesInfo().takeRetainedValue()
@@ -47,3 +49,4 @@ private func getBattery() -> Int? {
   }
   return nil
 }
+*/

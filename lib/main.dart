@@ -1,4 +1,72 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  static const platform = MethodChannel('com.example.macos/virtual_display');
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Virtual Display Detection'),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () async {
+              bool isVirtualDisplayDetected = await detectVirtualDisplay();
+              if (isVirtualDisplayDetected) {
+                showAlert(context, "Virtual Display Detected", "A virtual display was detected, which might indicate screen recording.");
+              } else {
+                showAlert(context, "No Virtual Display Detected", "No virtual display was detected.");
+              }
+            },
+            child: Text('Check for Virtual Display'),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<bool> detectVirtualDisplay() async {
+    try {
+      final bool result = await platform.invokeMethod('detectVirtualDisplay');
+      return result;
+    } on PlatformException catch (e) {
+      print("Failed to detect virtual display: '${e.message}'.");
+      return false;
+    }
+  }
+
+  void showAlert(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+
+
+/*import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -195,3 +263,4 @@ Future<void> _getBatteryLevel() async {
     }
   }
 }
+*/
