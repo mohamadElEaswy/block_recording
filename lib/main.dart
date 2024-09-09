@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
     } on PlatformException catch (e) {
       print("Failed to detect virtual display: '${e.message}'.");
       return false;
-    }
+    }catch(e){print(e.toString()); return false;}
   }
 
   void showAlert(BuildContext context, String title, String message) {
